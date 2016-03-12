@@ -1,0 +1,63 @@
+extends layout
+
+block content
+
+    
+    nav.navbar.navbar-static-top.navbar-dark.bg-inverse
+      .container
+        a.navbar-brand(href='#') bachOps
+        ul.nav.navbar-nav
+          li.nav-item.active
+            a.nav-link(href='#')
+              | Home 
+              span.sr-only (current)
+          //li.nav-item
+            a.nav-link(href='#') About
+          //li.nav-item
+            a.nav-link(href='#') Contact
+    .jumbotron
+      .container
+        .col-md-8
+            h1.display-3 Start bachOps
+            h3 Starting a new game of bachOps is simple. 
+            br
+            a.btn.btn-primary.btn-lg(href='#', role='button') Start »
+        .col-md-4
+            .row
+                h2 Join a running game
+                br
+            .row
+                .col-md-6
+                    label(for="spectate").h3 Spectate
+                .col-md-5
+                    input(type="text", id="spectate").form-control
+                .col-md-1
+                    button(type="button").btn.btn-primary Go
+            br
+            .row
+                .col-md-6
+                    label(for="control").h3 Control
+                .col-md-5
+                    input(type="text", id="control").form-control
+                .col-md-1
+                    button(type="button").btn.btn-primary Go
+            
+    .container
+
+      .row
+        .col-md-4
+          h2 What
+          p bachOps is a local multiplayer game. Start the game on any big screen by clicking the button above. This screen will be the spectator. Browse with your smartphone to the link displayed. The smartphone is now a player in the game. 
+          p Have fun!
+          p
+            //a.btn.btn-secondary(href='#', role='button') View details »
+        .col-md-4
+          h2 Why
+          p bachOps is a game I'm making for my thesis. The subject of the thesis is "Smartphones for local multiplayer games" 
+          //p
+            a.btn.btn-secondary(href='#', role='button') View details »
+        .col-md-4
+          h2 Who
+          p I'm Brecht, a 20 y/o Applied Informatics student at the University College Ghent
+          //p
+            a.btn.btn-secondary(href='#', role='button') View details »

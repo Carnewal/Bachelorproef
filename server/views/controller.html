@@ -1,0 +1,148 @@
+<html>
+
+<head>
+    <link href="stylesheets/reset.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="stylesheets/controller.css" rel="stylesheet" type="text/css" media="screen" />
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+
+    <title>Spinage Controller</title>
+</head>
+
+<body>
+    <div id="status">
+        Room:
+        <input id="roomId" name="roomId" type="text" /> | Name (4) :
+        <input type="text" name="playerName" id="playerName" maxlength="4" size="3" /> |
+        <input id="joinButton" type="submit" value="Join" /> | Status: <span id="statusMessage">Join a Room with a 4-char name.</span>
+        <br/>
+        <br/> Players: 5 
+
+
+    </div>
+
+    <div id="joystick">
+        <div id="left">
+            <div id="zone_joystick"></div>
+        </div>
+
+        <div id="right">
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+
+
+
+<script type="text/javascript" src="javascripts/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="javascripts/nipplejs.min.js"></script>
+<script type="text/javascript" src="javascripts/socket.io.js"></script>
+
+
+<script type="text/javascript">
+    window.scrollTo(0,1);
+
+    navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+    var socket = io.connect('http://192.168.31.152:42069/controller');
+    
+    socket.on('connect', function() {
+       console.log('Connected successfully to the server.'); 
+       if (navigator.vibrate) {
+	       navigator.vibrate(100);
+        }   
+    });
+
+    
+    /*
+    Input handling 
+    */
+
+    //Nipple
+    var options = {
+        zone: document.getElementById('zone_joystick'),
+        size: 200,
+        mode: 'static',   
+        position: { top: '50%', left: '21%' },  
+        color: '#FFF'        
+    };
+    var manager = nipplejs.create(options);
+    
+    var lastUpdatedAngle = -1;
+    var isMoving = false;
+
+    manager.on('move', function(evt, nipple) {
+        
+        var roundAngle = Math.round(nipple.angle.degree / 10) * 10;
+        var playerNeedsUpdate = false;
+        
+        if(lastUpdatedAngle === -1 || (lastUpdatedAngle !== roundAngle)) {
+            lastUpdatedAngle = roundAngle;
+            playerNeedsUpdate = true;
+        }        
+        
+        if(nipple.force > 0.60) {
+            if(!isMoving) {
+                isMoving = true;
+                playerNeedsUpdate = true;                
+            }            
+        } else {
+            if(isMoving) {
+                isMoving = false;
+                playerNeedsUpdate = true;
+            }
+        }        
+        
+        if(playerNeedsUpdate) {
+            updatePlayer();            
+        }
+        
+        
+    }).on('end', function(evt, nipple) {
+        //lastUpdatedAngle = -1;
+        isMoving = false;
+        updatePlayer();
+        
+        
+    });
+    
+    var updatePlayer = function() {
+        var info = {
+            move: isMoving,
+            angle: lastUpdatedAngle
+        }
+        
+        socket.emit('move', info, function(json) {
+            
+            if(json.problemMoving) {
+                if (navigator.vibrate) {
+                navigator.vibrate(50);
+                }                  
+            }
+        });
+        
+    }
+    
+    //Join room
+
+
+    $( "#joinButton" ).click(function() {
+        var roomId = $( "#roomId" ).val();
+        var playerName = $( "#playerName" ).val();
+        var domStatus = $( "#statusMessage" )
+        
+        if(!roomId || !playerName) {
+            domStatus.css( "color", "red" ).html("Please fill in roomId and Name.")
+            return;
+        }
+        socket.emit('joinRoom', roomId, playerName, function(json) {
+            domStatus.css( "color", "green" ).html(json.message)
+            console.log(json);
+        });
+    });
+
+</script>

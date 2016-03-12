@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<link rel="stylesheet" type="text/css" href="css/reset.css" />
+
+
+	<meta charset=utf-8>
+	<title>bachOps</title>
+
+	<style>
+		body {
+			margin: 0;
+		}
+		
+		canvas {
+			width: 100%;
+			height: 100%
+		}
+	</style>
+</head>
+
+<body oncontextmenu="return false">
+	<script src="js/socket.io-1.4.3.js"></script>
+	<script src="js/three.min.js"></script>
+	<script src="js/core/Player.js"></script>
+	<script src="js/core/Gun.js"></script>
+
+	<script src="js/bachops.js"></script>
+	<script>
+		window.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				window.addEventListener( 'mousedown', onDocumentMouseDown, false );
+				window.addEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
+				document.addEventListener( 'DOMMouseScroll', onDocumentMouseWheel, false);
+				window.addEventListener( 'resize', onWindowResize, false );
+	</script>
+</body>
+
+</html>

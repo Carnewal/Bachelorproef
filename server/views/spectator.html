@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin" rel="stylesheet">
+    <link href="stylesheets/reset.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="stylesheets/spectator.css" rel="stylesheet" type="text/css" media="screen" />
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+
+    <title>Spinage Controller</title>
+</head>
+
+<body>
+
+    <div id="hud">
+        <div id="players" class="overlay">
+
+            <ul id="playerBoard">
+                <li>4 | 5 | Friend</li>
+                <li>1 | 2 | Guy</li>
+                <li>2 | 0 | Buddy</li>
+            </ul>
+        </div>
+        <div id="message" class="overlay">
+            <ul id="messageBoard">
+                <li>Buddy killed Friend</li>
+                <li>Guy killed Friend</li>
+                <li>Buddy killed Guy</li>
+            </ul>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+
+
+
+<script type="text/javascript" src="javascripts/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="javascripts/nipplejs.min.js"></script>
+<script type="text/javascript" src="javascripts/socket.io.js"></script>
+
+
+<script type="text/javascript">
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+    
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    var room = getUrlParameter('room');
+
+    var socket = io.connect('http://192.168.0.227:42069/spectator');
+    
+    socket.on('connect', function() {
+        if(room) {
+            socket.emit('joinRoom', room, function(json) {
+                console.log("Joined room ")
+                console.log(json);
+            });
+        }
+       console.log('Connected successfully to the server.'); 
+    });
+    
+    socket.on('updatePlayers', function(pList) {
+        $("#playerBoard").empty();
+        for(var player in pList) {
+            var playerDom = $("<li>" + player.playerName + " | " + player.angle + "</li>")
+            $("#playerBoard").prepend(playerDom);
+        }
+        
+    }); 
+    
+    
+    
+    socket.on('updatePlayer', function(moveData) {
+        
+        console.log(moveData);
+    });
+
+</script>
