@@ -5,7 +5,8 @@
     $('#mobileInput .btn').click(function() {
       return socket.emit('mobileConnectWithCode', $('#mobileInput input').val());
     });
-    socket = io.connect('http://192.168.0.102:1337');
+    var addr = "192.168.31.152:1337"
+    socket = io.connect(addr);
     socket.on("connect", function() {});
     socket.on("error", function(error) {
       return alert(error);

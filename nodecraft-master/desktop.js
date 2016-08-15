@@ -16,7 +16,8 @@
 
   $('#desktopConnect').show();
 
-  socket = io.connect('http://192.168.0.102:1337');
+    var addr = "192.168.31.152:1337"
+  socket = io.connect(addr);
 
   socket.on("connect", function() {
     return console.log('codeGenerationHere');
